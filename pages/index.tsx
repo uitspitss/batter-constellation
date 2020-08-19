@@ -1,6 +1,6 @@
 import React from 'react';
 import { NextPage } from 'next';
-import PoseNet from 'react-posenet';
+import * as PoseNet from 'react-posenet';
 import 'twin.macro';
 import { ImageUploader } from '../components/ImageUploader';
 
@@ -8,7 +8,7 @@ type Props = {};
 
 const IndexPage: NextPage<Props> = () => {
   const [dataUrl, setDataUrl] = React.useState<string>('/batter.png');
-  const [posesString, setPosesString] = React.useState([]);
+  const [posesString, setPosesString] = React.useState<any>([]);
   const input = React.useMemo(() => {
     if (!process.browser) return;
     const image = new Image();
@@ -30,7 +30,7 @@ const IndexPage: NextPage<Props> = () => {
             <PoseNet
               input={input}
               inferenceConfig={{ decodingMethod: 'single-person' }}
-              onEstimate={(poses: object) => {
+              onEstimate={(poses: any) => {
                 setPosesString(JSON.stringify(poses));
               }}
             />
