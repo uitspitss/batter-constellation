@@ -1,5 +1,6 @@
 import React from 'react';
 import { NextPage } from 'next';
+import PoseNet from 'react-posenet';
 import 'twin.macro';
 import { ImageUploader } from '../components/ImageUploader';
 
@@ -7,6 +8,14 @@ type Props = {};
 
 const IndexPage: NextPage<Props> = () => {
   const [dataUrl, setDataUrl] = React.useState<string>('/batter.png');
+  const [posesString, setPosesString] = React.useState([]);
+  const input = React.useMemo(() => {
+    if (!process.browser) return;
+    const image = new Image();
+    image.crossOrigin = '';
+    image.src = dataUrl;
+    return image;
+  }, [dataUrl]);
 
   return (
     <section tw="text-gray-700">
@@ -17,6 +26,16 @@ const IndexPage: NextPage<Props> = () => {
           src={dataUrl}
         />
         <div tw="text-center lg:w-2/3 w-full">
+          {input && (
+            <PoseNet
+              input={input}
+              inferenceConfig={{ decodingMethod: 'single-person' }}
+              onEstimate={(poses: object) => {
+                setPosesString(JSON.stringify(poses));
+              }}
+            />
+          )}
+          {posesString}
           <h1 tw="sm:text-4xl text-3xl mb-4 font-medium text-gray-900">
             バッターの画像をアップロードしてください。
           </h1>
